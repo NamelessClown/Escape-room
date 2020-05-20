@@ -1,0 +1,18 @@
+const express = require("express");
+const app = express();
+
+let cage = 20;
+
+
+
+app.get("/", function (req, res) {
+  res.status(200).send(cage.toString());
+});
+
+app.post("/", function (req, res) {
+  console.log("in");
+  cage = 14;
+  console.log("cage: " + cage);
+});
+
+app.listen(80, "0.0.0.0");
