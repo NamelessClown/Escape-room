@@ -1,0 +1,66 @@
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include <stdlib.h>
+
+const char* ssid = "telenet-8550808";
+const char* password =  "2tz4Anpeuwtz";
+ 
+void setup() {
+ 
+  Serial.begin(115200);
+  delay(4000);
+  pinMode(15, OUTPUT);
+  pinMode(2, OUTPUT);
+  pinMode(4, OUTPUT);
+  WiFi.begin(ssid, password);
+ 
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.println("Connecting to WiFi..");
+  }
+  Serial.println("Connected to the WiFi network");
+  
+  
+ 
+}
+ 
+void loop() {
+ 
+  if ((WiFi.status() == WL_CONNECTED)) { //Check the current connection status
+ 
+    HTTPClient http;
+ 
+    http.begin("http://192.168.0.107/"); //Specify the URL
+    int httpCode = http.GET();                                        //Make the request
+ 
+    if (httpCode > 0) { //Check for the returning code
+ 
+        String payload = http.getString();
+        int payloadInt = payload.toInt();
+    
+        if(payloadInt <= 12){
+          digitalWrite(4, HIGH);
+          digitalWrite(2, LOW);
+          digitalWrite(15, LOW);
+        }else if(payloadInt > 12 && payloadInt < 20 ){
+          digitalWrite(4, LOW);
+          digitalWrite(2, HIGH);
+          digitalWrite(15, LOW);
+        }else if(payloadInt >= 20){
+          digitalWrite(4, LOW);
+          digitalWrite(2, LOW);
+          digitalWrite(15, HIGH);
+        }
+      
+      }
+ 
+    else {
+      Serial.println("Error on HTTP request");
+    }
+ 
+    http.end(); //Free the resources
+  }
+ //600000
+  delay(10000);
+ 
+}
