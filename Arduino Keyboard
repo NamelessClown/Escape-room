@@ -1,0 +1,91 @@
+#include "Keyboard.h"
+
+const int buttonPinA = 6;          
+int previousButtonStateA = HIGH;   
+
+const int buttonPinS = 5;          
+int previousButtonStateS = HIGH;   
+
+const int buttonPinD = 4;          
+int previousButtonStateD = HIGH;   
+
+const int buttonPinF = 3;          
+int previousButtonStateF = HIGH;   
+
+int analogVal = 0;
+int previousAnalogVal = 0;
+int currentDisk = 0;
+
+void setup() {
+  pinMode(buttonPinA, INPUT);
+  pinMode(buttonPinS, INPUT);
+  pinMode(buttonPinD, INPUT);
+  pinMode(buttonPinF, INPUT);
+
+  pinMode(A0, INPUT);
+
+  Keyboard.begin();
+}
+
+void loop() {
+
+  int buttonStateA = digitalRead(buttonPinA);
+  int buttonStateS = digitalRead(buttonPinS);
+  int buttonStateD = digitalRead(buttonPinD);
+  int buttonStateF = digitalRead(buttonPinF);
+  
+  analogVal = analogRead(A0);
+  
+  // if the button state has changed,
+  if ((buttonStateA != previousButtonStateA)
+      && (buttonStateA == HIGH)) {
+    Keyboard.print("a");
+  } if ((buttonStateS != previousButtonStateS)
+      && (buttonStateS == HIGH)) {
+    Keyboard.print("s");
+  } if ((buttonStateD != previousButtonStateD)
+      && (buttonStateD == HIGH)) {
+    Keyboard.print("d");
+  } if ((buttonStateF != previousButtonStateF)
+      && (buttonStateF == HIGH)) {
+    Keyboard.print("f");
+  }
+
+  
+  int a = analogVal;
+  if(analogVal != previousAnalogVal){
+    if(a > 0 && a < 256){
+      if(currentDisk != 1 ){
+         Keyboard.print('j');
+         currentDisk = 1;
+        }
+    }
+    if(a > 256 && a < 512){
+       if(currentDisk != 2 ){
+         Keyboard.print('k');
+         currentDisk = 2;
+        }
+    }
+    if(a > 521 && a < 768){
+       if(currentDisk != 3 ){
+         Keyboard.print('l');
+         currentDisk = 3;
+        }
+    }
+    if(a > 768 && a < 1024){
+         if(currentDisk != 4 ){
+         Keyboard.print('m');
+         currentDisk = 4;
+        }
+    }
+  }
+  
+  // save the current button state for comparison next time:
+  previousButtonStateA = buttonStateA;
+  previousButtonStateS = buttonStateS;
+  previousButtonStateD = buttonStateD;
+  previousButtonStateF = buttonStateF;
+  previousAnalogVal = analogVal;
+ 
+      
+}
